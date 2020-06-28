@@ -1,0 +1,34 @@
+{
+  "name": "koa-bigpipe",
+  "version": "1.0.0",
+  "description": "使用bigpipe流式渲染，落地SSR，切页CSR，极致性能验证",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DogJun/koa-bigpipe.git"
+  },
+  "keywords": [
+    "koa2",
+    "bigpipe",
+    "ssr",
+    "csr",
+    "quicklink",
+    "pjax"
+  ],
+  "author": "DogJun",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/DogJun/koa-bigpipe/issues"
+  },
+  "homepage": "https://github.com/DogJun/koa-bigpipe#readme",
+  "dependencies": {
+    "koa": "^2.13.0",
+    "koa-router": "^9.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  }
+}
