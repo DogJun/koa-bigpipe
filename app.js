@@ -1,7 +1,11 @@
 const Koa = require('koa')
 const Router = require('koa-router')
+const render = require('koa-swig')
+const co = require('co')
 const path = require('path')
 const fs = require('fs')
+const cheerio = require('cheerio')
+const { Readable } = require('stream')
 const app = new Koa()
 const router = new Router()
 
@@ -21,7 +25,15 @@ const task2 = () => {
     }, 2000)
   })
 }
-
+app.context.render = co.wrap(render({
+  root: path.join(__dirname, 'views'),
+  autoescape: true,
+  // ssr 最关键的地方
+  // cache: 'memory', // disable, set to false
+  cache: false,
+  ext: 'html',
+  writeBody: false,
+})); 
 router.get('/', async (ctx, next) => {
   ctx.status = 200
   ctx.type = 'html'
@@ -63,7 +75,32 @@ router.get('/', async (ctx, next) => {
   ctx.res.write(result2)
   ctx.res.end()
 })
-
+router.get('/index', async (ctx, next) => {
+  ctx.body = await ctx.render('index')
+})
+router.get('/about', async (ctx, next) => {
+  console.log('about')
+  ctx.status = 200
+  ctx.type = 'html'
+  const result = await ctx.render('about')
+  if (ctx.request.header['x-pjax']) {
+    const $ = cheerio.load(result)
+    $('.pjaxcontent').each(function () {
+      ctx.res.write($(this).html())
+    })
+    ctx.res.end()
+  } else {
+    function createSsrStreamPromise () {
+      return new Promise((resolve, reject) => {
+        const stream = new Readable()
+        stream.push(result)
+        stream.push(null)
+        stream.on('error', err => {reject(err)}).pipe(ctx.res)
+      })
+    }
+    await createSsrStreamPromise()
+  }
+})
 app.use(router.routes())
   .use(router.allowedMethods())
 

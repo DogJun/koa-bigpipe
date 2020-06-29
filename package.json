@@ -25,8 +25,11 @@
   },
   "homepage": "https://github.com/DogJun/koa-bigpipe#readme",
   "dependencies": {
+    "cheerio": "^1.0.0-rc.3",
+    "co": "^4.6.0",
     "koa": "^2.13.0",
-    "koa-router": "^9.0.1"
+    "koa-router": "^9.0.1",
+    "koa-swig": "^2.2.1"
   },
   "devDependencies": {
     "nodemon": "^2.0.4"
